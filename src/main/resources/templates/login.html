@@ -5,7 +5,7 @@
 	<title>Sample Login</title>
 	<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"> 
 	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
-	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+
 </head>
 
 <body>
@@ -14,12 +14,14 @@
 		<h2 class="text-center" th:text="#{login.title}"></h2>
 	    <form id="login_form" method="post" th:action="@{/login}" th:object="${loginModel}">
 		<!-- Spring Securityのエラーメッセージ -->
-		<p th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']} != null" th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}" class="text-danger">
+<!--		<p th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']} != null" th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}" class="text-danger">-->
+			<!-- Spring Security + IDを使ったエラーメッセージ -->
+			<p th:if="${errorMessage}" th:text="${errorMessage}" class="text-danger"></p>
 		</p>
 		
 		<!-- ユーザーID -->
 		<div class="form-group">
-            <label for="userId">ユーザーID：</label>
+            <label for="userId">ユーザーID（数字4桁）：</label>
             <input type="text" th:field="*{userId}" class="form-control">
         </div>
 		<!-- パスワード -->

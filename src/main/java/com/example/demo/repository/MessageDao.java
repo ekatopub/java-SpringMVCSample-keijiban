@@ -7,8 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 //import org.springframework.data.jpa.repository.Query;
 
 import com.example.demo.domain.message.model.Message;
+import com.example.demo.domain.message.model.MessageKey;
 
-public interface MessageDao extends JpaRepository<Message, Integer> {
+//public interface MessageDao extends JpaRepository<Message, Integer> {
+//for DB Join
+public interface MessageDao extends JpaRepository<Message, MessageKey> {	
 	  /* JPQL定数 */
 
 	/*  final String JPQL_DELETE_MESSAGE_BY_KINDID = " DELETE "
@@ -21,6 +24,7 @@ public interface MessageDao extends JpaRepository<Message, Integer> {
 //	  @Modifying
 //	  @Query(JPQL_DELETE_MESSAGE_BY_KINDID)
 //	  public int deleteByKindId(String kindId) throws DataAccessException;
+
 	  
 
 }
