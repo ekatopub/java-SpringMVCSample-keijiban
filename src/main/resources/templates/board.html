@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <title>掲示板</title>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
+	<script th:src="@{/webjars/jquery/jquery.min.js}" defer></script>
+	<meta name="_csrf" th:content="${_csrf.token}"><!-- CSRFエラー対策 -->
+	<meta name="_csrf_header" th:content="${_csrf.headerName}"><!-- CSRFエラー対策 -->
+
+</head>
+<body>
+    <h1>掲示板</h1>
+	<div>ログインしているユーザー: <span th:text="${userName}"></span></div>
+	
+	<h2>新規投稿</h2>
+	<form th:action="@{/board/post}" th:object="${newPost}" method="post"><!-- BoardControllerの@PostMapping("/post")メソッド、newPostオブジェクトへ -->
+	    <div>
+	        <label for="text">メッセージ：</label>
+	        <textarea id="text" th:field="*{text}" rows="4" cols="40"></textarea>
+	    </div>
+	    <button type="submit">投稿</button>
+	</form>
+	<hr>
+    
+    <h2>投稿一覧</h2>
+    <div th:each="board : ${boardList}"><!-- boardListという名前でコントローラーから渡された投稿のリストを繰り返し処理 -->
+        <div>
+            投稿ID: <span th:text="${board.id}"></span><br>
+            投稿者: <span th:text="${board.userName}"></span>
+            <!-- 投稿日時:<span th:if="${board.registerDate}" th:text="${#dates.format(board.registerDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+			<span th:unless="${board.registerDate}">N/A</span><br /> -->
+            内容: <div><span th:utext="${board.text}"></span></div><!-- 改行を表示させるためtextでなくth:utext -->
+        </div>
+		<div th:if="${board.userId == currentUserId}"><!-- ユーザーIDが同じ投稿のみに削除ボタンを表示 -->
+		    <button class="delete-button" th:data-id="${board.id}">削除</button>
+			</div>
+        <hr>
+    </div>
+
+
+	<script th:src="@{/board.js}"></script>
+    
+</body>
+</html>

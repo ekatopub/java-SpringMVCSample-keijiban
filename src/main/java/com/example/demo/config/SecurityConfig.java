@@ -53,11 +53,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login") // ログイン処理のURL
                 .loginPage("/login") // ログインページの指定
                 .failureUrl("/login?error") // ログイン失敗時の遷移先（?以降はGETメソッドのクエリパラメータ）
-                .usernameParameter("userId") // ログインページのユーザーID
-                                                // (name属性で指定)
-                .passwordParameter("password") // ログインページのパスワード
-                                                // (name属性で指定)
-                .defaultSuccessUrl("/form", true); // 成功後の遷移先
+                .usernameParameter("userId") // ログインページのユーザーID(name属性で指定)
+                .passwordParameter("password") // ログインページのパスワード(name属性で指定)
+           //   .defaultSuccessUrl("/form", true); // 成功後の遷移先 DB使用前
+                .defaultSuccessUrl("/board/", true); // 成功後の遷移先
 
         // ログアウト処理
         http
