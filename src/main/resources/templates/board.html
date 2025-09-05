@@ -32,6 +32,8 @@
             投稿者: <span th:text="${board.userName}"></span>
             <!-- 投稿日時:<span th:if="${board.registerDate}" th:text="${#dates.format(board.registerDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
 			<span th:unless="${board.registerDate}">N/A</span><br /> -->
+			投稿日時:<span th:if="${board.registerDate}" th:text="${#temporals.format(board.registerDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+			<span th:unless="${board.registerDate}">N/A</span><br /> 
             内容: <div><span th:utext="${board.text}"></span></div><!-- 改行を表示させるためtextでなくth:utext -->
         </div>
 		<div th:if="${board.userId == currentUserId}"><!-- ユーザーIDが同じ投稿のみに削除ボタンを表示 -->
