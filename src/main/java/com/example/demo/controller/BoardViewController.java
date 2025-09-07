@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.dto.BoardDto;
@@ -58,7 +60,18 @@ public class BoardViewController {
 
         model.addAttribute("boardList", boardDtoList); // DTOのリストをビューに渡す
         model.addAttribute("newPost", new Board());
+        model.addAttribute("board", new Board());
         model.addAttribute("currentUserId", securitySession.getUsername());
         return "board";
-    }
+        
+    }//getBoardList
+    @PostMapping("/post")
+    public String postBoard(@ModelAttribute Board board, Model model) {
+        // ここに投稿内容をデータベースに保存するロジックを実装します。
+        // 例: boardService.postBoard(board);
+        
+        // 投稿が成功したら、ボード一覧ページにリダイレクトします。
+        return "redirect:/board/";
+    }    
+    
 }

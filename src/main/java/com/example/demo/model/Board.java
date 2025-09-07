@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "board")//テーブル名
@@ -25,7 +27,9 @@ public class Board {
 	    private String userId;
 
     
-	    @Column(name = "text", length = 255, nullable = false)
+	    @NotBlank(message = "{message.1}") // 空文字や空白のみの場合はエラー
+	    @Size(min = 1, max = 50, message = "{message.2}") // 文字数チェック
+	    @Column(name = "text", length = 25500, nullable = false)// 文字数チェック
 	    private String text;
 
 	    @Column(name = "register_date",  nullable = false)
@@ -62,6 +66,7 @@ public class Board {
 	    public java.time.LocalDateTime getRegisterDate() {
 	        return this.registerDate;
 	    }
+	    
 	}
 
 

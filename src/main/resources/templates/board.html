@@ -16,13 +16,16 @@
 	<div>ログインしているユーザー: <span th:text="${userName}"></span></div>
 	
 	<h2>新規投稿</h2>
-	<form th:action="@{/board/post}" th:object="${newPost}" method="post"><!-- BoardControllerの@PostMapping("/post")メソッド、newPostオブジェクトへ -->
-	    <div>
+	<!--<form th:action="@{/board/post}" th:object="${newPost}" method="post"> BoardControllerの@PostMapping("/post")メソッド、newPostオブジェクトへ -->
+		<form id="postForm" method="post" th:action="@{/board/post}" th:object="${board}"><!-- REST+ajaxエラーチェック実装のため変更 -->	
+	    <div class="form-group">
 	        <label for="text">メッセージ：</label>
-	        <textarea id="text" th:field="*{text}" rows="4" cols="40"></textarea>
+	        <textarea id="text" th:field="*{text}" rows="4" cols="40" class="form-control" th:errorclass="is-invalid"></textarea>
+			<div class="invalid-feedback"></div><!-- エラー表示をajaxにしたので常に存在するようにした -->
+			<!-- <div class="invalid-feedback" th:errors="*{text}"></div>thymeleaf側でのvalidationエラーメッセージ取得-->
 	    </div>
-	    <button type="submit">投稿</button>
-	</form>
+	    	<button type="submit" class="btn btn-primary">投稿</button>
+		</form>
 	<hr>
     
     <h2>投稿一覧</h2>
@@ -31,7 +34,7 @@
             投稿ID: <span th:text="${board.id}"></span><br>
             投稿者: <span th:text="${board.userName}"></span>
             <!-- 投稿日時:<span th:if="${board.registerDate}" th:text="${#dates.format(board.registerDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
-			<span th:unless="${board.registerDate}">N/A</span><br /> -->
+			<span th:unless="${board.registerDate}">N/A</span><br /> thymeleaf-extras-java8tim　4.0.xでは#Dateだとエラになるー-->
 			投稿日時:<span th:if="${board.registerDate}" th:text="${#temporals.format(board.registerDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
 			<span th:unless="${board.registerDate}">N/A</span><br /> 
             内容: <div><span th:utext="${board.text}"></span></div><!-- 改行を表示させるためtextでなくth:utext -->
