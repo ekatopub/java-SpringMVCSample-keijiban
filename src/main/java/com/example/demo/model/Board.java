@@ -26,10 +26,12 @@ public class Board {
 	    @Column(name = "user_id", length = 4, nullable = false)
 	    private String userId;
 
-    
-	    @NotBlank(message = "{message.1}") // 空文字や空白のみの場合はエラー
-	    @Size(min = 1, max = 50, message = "{message.2}") // 文字数チェック
-	    @Column(name = "text", length = 25500, nullable = false)// 文字数チェック
+  
+	//    @NotBlank(message = "{message.1}") // 空文字や空白のみの場合はエラー
+	//    @Size(min = 1, max = 50, message = "{message.2}") // 文字数チェック
+	//    @Column(name = "text", length = 25500, nullable = false)// 文字数チェック
+	    @NotBlank(message = "{message.1}", groups = ValidGroup1.class)
+	    @Size(min = 1, max = 50, message = "{message.2}", groups = ValidGroup2.class)
 	    private String text;
 
 	    @Column(name = "register_date",  nullable = false)

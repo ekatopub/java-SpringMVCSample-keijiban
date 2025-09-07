@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Board;
+import com.example.demo.model.GroupOrder;
 import com.example.demo.service.BoardService;
 
 @RestController
@@ -37,7 +38,8 @@ public class BoardRestController {//入力内容を受け取ってバリデー�
     @PostMapping("/validate")
     public ResponseEntity<?> validateBoard(
     		@RequestBody//戻り値を直接HTTPレスポンスボディとして扱い、JSONに自動変換
-    		@Validated Board board,//GroupOderは使わなくなったので削除
+    		//@Validated Board board,//GroupOderは使わなくなったので削除
+    		@Validated(GroupOrder.class) Board board,//グループ順を使う
     		BindingResult bindingResult)
     	{ //エラーが含まれている場合、エラー情報をJSON形式でクライアントに返す
     	System.out.println("validateBoard is called");
