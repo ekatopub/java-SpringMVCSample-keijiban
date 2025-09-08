@@ -13,6 +13,9 @@
 </head>
 <body>
     <h1>掲示板</h1>
+	<form th:action="@{/logout}" method="post">
+	    <button type="submit">ログアウト</button>
+	</form>
 	<div>ログインしているユーザー: <span th:text="${userName}"></span></div>
 	
 	<h2>新規投稿</h2>
@@ -30,7 +33,7 @@
     
     <h2>投稿一覧</h2>
     <div th:each="board : ${boardList}"><!-- boardListという名前でコントローラーから渡された投稿のリストを繰り返し処理 -->
-        <div>
+        <div class="post-item" th:data-id="${board.id}">
             投稿ID: <span th:text="${board.id}"></span><br>
             投稿者: <span th:text="${board.userName}"></span>
             <!-- 投稿日時:<span th:if="${board.registerDate}" th:text="${#dates.format(board.registerDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
@@ -38,10 +41,12 @@
 			投稿日時:<span th:if="${board.registerDate}" th:text="${#temporals.format(board.registerDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
 			<span th:unless="${board.registerDate}">N/A</span><br /> 
             内容: <div><span th:utext="${board.text}"></span></div><!-- 改行を表示させるためtextでなくth:utext -->
-        </div>
+
 		<div th:if="${board.userId == currentUserId}"><!-- ユーザーIDが同じ投稿のみに削除ボタンを表示 -->
-		    <button class="delete-button" th:data-id="${board.id}">削除</button>
+		<!-- <div>ユーザーIDが違っても削除できるかのテスト用 -->
+				    <button class="delete-button" th:data-id="${board.id}">削除</button>
 			</div>
+		</div>	
         <hr>
     </div>
 

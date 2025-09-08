@@ -58,7 +58,7 @@ public class HomeController {
 	private MessageService messageService;
 	
 
-	@Autowired //added for JOINt
+	@Autowired //added for JOINT
 	private SendKindMessageService sendKindMessageService;
 	
 

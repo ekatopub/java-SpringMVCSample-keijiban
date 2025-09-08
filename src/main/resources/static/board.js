@@ -12,9 +12,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// 削除ボタンごとにクリックイベントを追加
     deleteButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const boardId = this.dataset.id;	//ボタンのth:data-id属性から対応する投稿のIDを取得
-            
+  
+		//button.addEventListener('click', function() {
+        //    const boardId = this.dataset.id;	//ボタンのth:data-id属性から対応する投稿のIDを取得
+		
+		button.addEventListener('click', (event) => { // アロー関数に変更
+		    //const boardId = button.dataset.id; // this.dataset.id を button.dataset.id に変更
+			// event.currentTargetがクリックされたボタンを正確に参照
+			const clickedButton = event.currentTarget;
+			const boardId = clickedButton.dataset.id;
+
+			          
             if (confirm(`本当に削除しますか？\n\n記事ID: ${boardId}`)) {            //  confirmメッセージをテンプレートリテラルで記述
                 fetch(`/api/board/${boardId}`, {	//サーバーに非同期でリクエストを送信
                     method: 'DELETE',		//REST API
@@ -25,8 +33,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .then(response => {
                     if (response.ok) {
-                        // 削除成功後、ページをリロードして一覧を更新
-                        window.location.reload();
+						console.log("サーバからのレスポンスはOK");
+                        // 削除成功後、ページをリロードして一覧を更新ー＞ajaxにするため、やめる
+                        //window.location.reload();
+						//const postElement = this.closest('.post-item');
+						// button.closest() に変更して、親要素を正確に特定→NG
+						//const postElement = button.closest('.post-item');
+						// クリックされたボタンの親要素をDOMから削除
+						const postElement = clickedButton.closest('.post-item');
+						
+						// postElementが取得できたか確認する
+						console.log('取得した投稿要素:', postElement);
+						
+						        if (postElement) {
+						              postElement.remove();
+						         }
+					} else if (response.status === 403) {
+					       // 権限がない場合のエラーを明記
+					  alert('この投稿を削除する権限がありません。');
                     } else {
 						        return response.json().then(errorData => {
 						            alert(errorData.message);
@@ -48,8 +72,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		 * バリデーションに成功した場合のみ、本来のフォーム送信が実行され、投稿が完了
 		 */
 		
-		const postForm = document.querySelector('form');
-
+		//const postForm = document.querySelector('form');
+		const postForm = document.getElementById('postForm');
 		postForm.addEventListener('submit', function(event) {
 			console.log('Submit event triggered.');
 		    event.preventDefault(); // フォームのデフォルト送信をキャンセル

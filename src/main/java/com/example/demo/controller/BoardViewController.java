@@ -57,6 +57,17 @@ public class BoardViewController {
 
             return dto;
         }).collect(Collectors.toList());
+        
+        // 現在のユーザーIDを取得 ログインユーザー表示用
+        String currentUserId = securitySession.getUsername();
+        
+        // ユーザーIDからユーザー名を取得 ログインユーザー表示用
+        String userName = userService.findUserNameByUserId(currentUserId);
+        
+        // ユーザー名をモデルに追加 ログインユーザー表示用
+        model.addAttribute("userName", userName);
+        model.addAttribute("currentUserId", currentUserId);
+
 
         model.addAttribute("boardList", boardDtoList); // DTOのリストをビューに渡す
         model.addAttribute("newPost", new Board());
