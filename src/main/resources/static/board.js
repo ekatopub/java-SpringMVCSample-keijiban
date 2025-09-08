@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						// button.closest() に変更して、親要素を正確に特定→NG
 						//const postElement = button.closest('.post-item');
 						// クリックされたボタンの親要素をDOMから削除
-						const postElement = clickedButton.closest('.post-item');
+						const postElement = clickedButton.closest('.post-and-divider');
 						
 						// postElementが取得できたか確認する
 						console.log('取得した投稿要素:', postElement);
@@ -167,12 +167,23 @@ document.addEventListener('DOMContentLoaded', function() {
 		        });
 		    })
 		    .then(postResponse => {
-		        if (postResponse && postResponse.ok) {
-		            window.location.reload(); // 投稿成功
+		        if (postResponse && postResponse.ok) {// 投稿成功
+		           // window.location.reload(); // 投稿成功 ajax化のため削除
+				   // ajax化　レスポンスをJSONとしてパース
+				   return postResponse.json();
 		        } else {
 		            alert('投稿に失敗しました。');
+					// エラーを伝播させる
+					 return Promise.reject('投稿に失敗しました。');
 		        }
 		    })
+			.then(newBoard => {
+			    // サーバーから返された新しい投稿データ (newBoard) を使ってDOMを更新する
+			    addPostToBoard(newBoard, csrfToken, csrfHeader);
+			    
+			    // フォームの入力内容をクリアする
+			    document.getElementById('text').value = '';
+			})
 		    .catch(error => {//ここでerror変数を定義
 		        // バリデーション失敗時には何もしない
 		        if (error !== 'Validation failed') {
@@ -183,11 +194,89 @@ document.addEventListener('DOMContentLoaded', function() {
 		
 		 });//postForm.addEventListener
 				 
-	
-			
-	
 	});//addEventListener
+	// board.js に以下の関数を追加
 	
+	
+	/**
+	 * 新しい投稿をDOMに追加する
+	 * @param {object} board - サーバーから返された投稿データ
+	 * @param {string} csrfToken - CSRFトークン
+	 * @param {string} csrfHeader - CSRFヘッダー名
+	 */	
+	
+	function addPostToBoard(board, csrfToken, csrfHeader) {
+		// サーバーから返された投稿データ（board）から情報を取得
+		const boardId = board.id;
+		const userName = board.userName;
+		const registerDate = board.registerDate;
+
+		// 日付を適切な形式に整形
+		const date = new Date(board.registerDate);
+		const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+
+	    // 新しい投稿のHTMLを生成
+	    // board.id と board.text を使用して動的にコンテンツを作成
+		const postHTML = `
+			<div class="post-and-divider" data-id="${boardId}">
+			<div class="post-item">
+		        投稿ID: <span>${boardId}</span><br>
+		        投稿者: <span>${userName}</span>
+		        投稿日時:<span>${formattedDate}</span><br />
+		        内容: <div><span>${board.text}</span></div>
+		        <div>
+		            <button class="delete-button btn btn-danger" data-id="${boardId}">削除</button>
+		        </div>
+		    </div>
+		    <hr>
+		`;
+
+	    // 掲示板の投稿一覧のコンテナ要素を取得
+	    const boardListContainer = document.getElementById('post-list');
+	    
+	    // 掲示板の一番上に新しい投稿を追加
+	    if (boardListContainer) {
+	        boardListContainer.insertAdjacentHTML('beforeend', postHTML);
+	    }
+	    
+	    // 新しく追加された削除ボタンにイベントリスナーを再登録する
+	    const newDeleteButton = boardListContainer.querySelector(`.post-and-divider[data-id="${board.id}"] .delete-button`);
+	    if (newDeleteButton) {
+	        newDeleteButton.addEventListener('click', (event) => {
+	            const clickedButton = event.currentTarget;
+	            const boardId = clickedButton.dataset.id;
+	            
+	            if (confirm(`本当に削除しますか？\n\n記事ID: ${boardId}`)) {
+	                fetch(`/api/board/${boardId}`, {
+	                    method: 'DELETE',
+	                    headers: {
+	                        [csrfHeader]: csrfToken
+	                    }
+	                })
+	                .then(response => {
+	                    if (response.ok) {
+	                        const postElement = clickedButton.closest('.post-and-divider');
+	                        if (postElement) {
+	                            postElement.remove();
+	                        }
+	                    } else if (response.status === 403) {
+	                        alert('この投稿を削除する権限がありません。');
+	                    } else {
+	                        return response.json().then(errorData => {
+	                            alert(errorData.message);
+	                        });
+	                    }
+	                })
+	                .catch(error => {
+	                    console.error('削除中にエラーが発生しました:', error);
+	                    alert('削除中にエラーが発生しました。');
+	                });
+	            }
+	        });
+	    }
+	}
+	
+		
 	
 					 /**
 					  * 以下はバリデーション/RESTを使用しない場合なので無視

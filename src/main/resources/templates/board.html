@@ -5,6 +5,7 @@
 
     <title>掲示板</title>
 	<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
 	<script th:src="@{/webjars/jquery/jquery.min.js}" defer></script>
 	<meta name="_csrf" th:content="${_csrf.token}"><!-- CSRFエラー対策 -->
@@ -14,7 +15,7 @@
 <body>
     <h1>掲示板</h1>
 	<form th:action="@{/logout}" method="post">
-	    <button type="submit">ログアウト</button>
+	    <button type="submit" class="btn btn-secondary">ログアウト</button>
 	</form>
 	<div>ログインしているユーザー: <span th:text="${userName}"></span></div>
 	
@@ -32,8 +33,9 @@
 	<hr>
     
     <h2>投稿一覧</h2>
-    <div th:each="board : ${boardList}"><!-- boardListという名前でコントローラーから渡された投稿のリストを繰り返し処理 -->
-        <div class="post-item" th:data-id="${board.id}">
+	<div id="post-list">
+    <div th:each="board : ${boardList}" th:data-id="${board.id}" class="post-and-divider"><!-- boardListという名前でコントローラーから渡された投稿のリストを繰り返し処理 -->
+        <div class="post-item"><!-- th:data-id="${board.id}"-->
             投稿ID: <span th:text="${board.id}"></span><br>
             投稿者: <span th:text="${board.userName}"></span>
             <!-- 投稿日時:<span th:if="${board.registerDate}" th:text="${#dates.format(board.registerDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
@@ -44,11 +46,12 @@
 
 		<div th:if="${board.userId == currentUserId}"><!-- ユーザーIDが同じ投稿のみに削除ボタンを表示 -->
 		<!-- <div>ユーザーIDが違っても削除できるかのテスト用 -->
-				    <button class="delete-button" th:data-id="${board.id}">削除</button>
+				    <button class="delete-button btn btn-danger" th:data-id="${board.id}">削除</button>
 			</div>
 		</div>	
         <hr>
     </div>
+	</div>
 
 
 	<script th:src="@{/board.js}"></script>

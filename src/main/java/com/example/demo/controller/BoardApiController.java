@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController; // CORS対策
 
+import com.example.demo.dto.BoardDto;
 import com.example.demo.model.Board;
 import com.example.demo.service.BoardService;
+import com.example.demo.service.UserService;
 import com.example.demo.util.SecuritySession;
 
 //@Controller
@@ -27,22 +29,39 @@ public class BoardApiController {
 
     private final BoardService boardService;
     private final SecuritySession securitySession;
+    private final UserService userService; 
 
     @Autowired //DI
-    public BoardApiController(BoardService boardService, SecuritySession securitySession) {
+    public BoardApiController(BoardService boardService, SecuritySession securitySession, UserService userService) {
         this.boardService = boardService;
         this.securitySession = securitySession;
+        this.userService = userService;
     }
 
     /**
      * 新しい投稿を作成
      */
     @PostMapping("/post")
-    public Board postBoard(@RequestBody Board board) {
-        board.setUserId(securitySession.getUsername());
+    public BoardDto postBoard(@RequestBody Board board) {
+//    public Board postBoard(@RequestBody Board board) {//ajax化のため変更
+        // ユーザーIDと日時をセットする
+        String userId = securitySession.getUsername();
+        board.setUserId(userId);
+        //board.setUserId(securitySession.getUsername());　//ajax化のため変更
         board.setRegisterDate(LocalDateTime.now());
-        boardService.postBoard(board);
-        return board;
+        boardService.postBoard(board);// ここでDBに保存する際、ポストIDが自動でセットされる
+        //return board;// IDがセットされたオブジェクトを返す　ajax化のため変更
+        
+        // DTOを作成し、ID、テキスト、日時、ユーザー名をセットして返す
+        BoardDto dto = new BoardDto();
+        dto.setId(board.getId());
+        dto.setUserId(board.getUserId());
+        dto.setText(board.getText());
+        dto.setRegisterDate(board.getRegisterDate());
+        dto.setUserName(userService.findUserNameByUserId(userId)); // ユーザー名を取得してセット
+
+        return dto; // DTOを返す
+
     }
 
     @DeleteMapping("/{id}")
