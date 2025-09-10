@@ -5,6 +5,7 @@
 
     <title>掲示板</title>
 	<link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/custom.css}">
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 	<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}" defer></script>
 	<script th:src="@{/webjars/jquery/jquery.min.js}" defer></script>
@@ -13,11 +14,12 @@
 
 </head>
 <body>
+	<div class="content">
     <h1>掲示板</h1>
 	<form th:action="@{/logout}" method="post">
-	    <button type="submit" class="btn btn-secondary">ログアウト</button>
+	    <div class="flex-container"><button type="submit" class="btn btn-secondary">ログアウト</button></div>
 	</form>
-	<div>ログインしているユーザー: <span th:text="${userName}"></span></div>
+	<div class="flex-container display-login-username"><div>ログインしているユーザー: <span th:text="${userName}"></span></div></div>
 	
 	<h2>新規投稿</h2>
 	<!--<form th:action="@{/board/post}" th:object="${newPost}" method="post"> BoardControllerの@PostMapping("/post")メソッド、newPostオブジェクトへ -->
@@ -28,7 +30,7 @@
 			<div class="invalid-feedback"></div><!-- エラー表示をajaxにしたので常に存在するようにした -->
 			<!-- <div class="invalid-feedback" th:errors="*{text}"></div>thymeleaf側でのvalidationエラーメッセージ取得-->
 	    </div>
-	    	<button type="submit" class="btn btn-primary">投稿</button>
+	    	<div class="flex-container"><button type="submit" class="btn btn-primary">投稿</button></div>
 		</form>
 	<hr>
     
@@ -46,15 +48,15 @@
 
 		<div th:if="${board.userId == currentUserId}"><!-- ユーザーIDが同じ投稿のみに削除ボタンを表示 -->
 		<!-- <div>ユーザーIDが違っても削除できるかのテスト用 -->
-				    <button class="delete-button btn btn-danger" th:data-id="${board.id}">削除</button>
+				    <div class="flex-container"><button class="delete-button btn btn-danger" th:data-id="${board.id}">削除</button></div>
 			</div>
 		</div>	
         <hr>
     </div>
 	</div>
 
-
+	</div>
 	<script th:src="@{/board.js}"></script>
-    
+
 </body>
 </html>

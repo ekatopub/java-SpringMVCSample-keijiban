@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		        投稿日時:<span>${formattedDate}</span><br />
 		        内容: <div><span>${board.text}</span></div>
 		        <div>
-		            <button class="delete-button btn btn-danger" data-id="${boardId}">削除</button>
+		            <div class="flex-container"><button class="delete-button btn btn-danger" data-id="${boardId}">削除</button></div>
 		        </div>
 		    </div>
 		    <hr>

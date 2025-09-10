@@ -45,6 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
                 .antMatchers("/login").permitAll() // 直接リンクOK
+                .antMatchers("/custom.css").permitAll()//ログイン画面にCSS適用のため。複数ある場合は,でつなぐ
                 .anyRequest().authenticated(); // それ以外は直接リンクNG
 
         // ログイン処理
