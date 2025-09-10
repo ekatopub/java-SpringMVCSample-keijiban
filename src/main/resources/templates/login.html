@@ -17,7 +17,9 @@
 		<!-- Spring Securityのエラーメッセージ -->
 <!--		<p th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']} != null" th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}" class="text-danger">-->
 			<!-- Spring Security + IDを使ったエラーメッセージ -->
-			<p th:if="${errorMessage}" th:text="${errorMessage}" class="text-danger"></p>
+			<!-- <p th:if="${errorMessage}" th:text="${errorMessage}" class="text-danger"></p> -->
+			<!-- AOP+多言語対応を使ったエラーメッセージ -->
+			<p th:if="${param.error}" th:text="#{AbstractUserDetailsAuthenticationProvider.badCredentials}">
 		</p>
 		
 		<!-- ユーザーID -->
